@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\MemoryAnalyzer.Core\MemoryAnalyzer.Core.csproj" />
+    <ProjectReference Include="..\MemoryAnalyzer.Windows\MemoryAnalyzer.Windows.csproj" />
+  </ItemGroup>
+
+  <Target Name="PublishHistoryAgent" AfterTargets="Publish">
+    <MSBuild Projects="..\MemoryAnalyzer.Agent\MemoryAnalyzer.Agent.csproj"
+             Targets="Publish"
+             Properties="Configuration=$(Configuration);PublishDir=$(PublishDir)" />
+  </Target>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+
+</Project>
