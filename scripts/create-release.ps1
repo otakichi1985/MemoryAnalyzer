@@ -41,9 +41,12 @@ Write-Host "zip: $ZipPath"
 Write-Host "sha256: $Hash"
 
 # 5. バージョン変更をコミットし、タグを付けてGitHubへ公開
-git -C $Root add $Csproj
-git -C $Root commit -m "v$Version"
-git -C $Root push origin main
+$Changed = git -C $Root status --porcelain -- $Csproj
+if ($Changed) {
+    git -C $Root add $Csproj
+    git -C $Root commit -m "v$Version"
+    git -C $Root push origin main
+}
 git -C $Root tag "v$Version"
 git -C $Root push origin "v$Version"
 
