@@ -2,3 +2,10 @@
 **/bin/
 **/obj/
 dist/
+
+# 開発内部文書（GitHub公開対象外）
+AGENTS.md
+HUMAN_EVALUATION.md
+NEXT_IMPLEMENTATION_INSTRUCTIONS.md
+START_MEMORY_ANALYZER.cmd
+context/
