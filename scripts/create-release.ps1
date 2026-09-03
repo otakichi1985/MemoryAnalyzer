@@ -4,8 +4,13 @@ param(
 )
 
 # 新しい版をビルドしてGitHub Releaseへ公開する手順。
-# 使い方: powershell -File scripts\create-release.ps1 -Version 1.2.0
+# 使い方: pwsh -File scripts\create-release.ps1 -Version 1.2.0
+# PowerShell 7 (pwsh) で実行すること（日本語の文字化けを防ぐため）。
 $ErrorActionPreference = "Stop"
+
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    throw "PowerShell 7 (pwsh) で実行してください。pwsh -File scripts\create-release.ps1 -Version x.y.z"
+}
 
 $Root = Split-Path $PSScriptRoot -Parent
 $Csproj = Join-Path $Root "src\MemoryAnalyzer.App\MemoryAnalyzer.App.csproj"
@@ -15,6 +20,14 @@ $Repo = "otakichi1985/MemoryAnalyzer"
 if ($Version -notmatch '^\d+\.\d+\.\d+$') {
     throw "Version は x.y.z 形式で指定してください。"
 }
+if (git -C $Root tag -l "v$Version") {
+    throw "タグ v$Version は既に存在します。Version を上げてください。"
+}
+
+# 0. 起動中のアプリを終了し、公開ビルド先のファイルロックを防ぐ
+Get-Process -Name "MemoryAnalyzer.App", "MemoryAnalyzer.Agent" -ErrorAction SilentlyContinue |
+    Stop-Process -Force
+Start-Sleep -Milliseconds 500
 
 # 1. バージョンをcsprojへ反映
 $Content = Get-Content -LiteralPath $Csproj -Raw

@@ -32,6 +32,14 @@ Windows 11 でメモリを多く使っている原因を「どのアプリが、
 dotnet publish src\MemoryAnalyzer.App\MemoryAnalyzer.App.csproj -c Release -o dist\MemoryAnalyzer
 ```
 
+## 新バージョンの公開
+
+PowerShell 7（pwsh）で次を実行します（起動中のアプリは自動で終了し、zip・内容チェック付きで公開されます）。
+
+```sh
+pwsh -File scripts\create-release.ps1 -Version 1.2.0 -Notes "変更点の説明"
+```
+
 ## テスト
 
 ```sh

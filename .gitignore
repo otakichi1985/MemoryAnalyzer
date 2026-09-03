@@ -2,6 +2,7 @@
 **/bin/
 **/obj/
 dist/
+verify/artifacts/
 
 # 開発内部文書（GitHub公開対象外）
 AGENTS.md
