@@ -10,3 +10,8 @@ HUMAN_EVALUATION.md
 NEXT_IMPLEMENTATION_INSTRUCTIONS.md
 START_MEMORY_ANALYZER.cmd
 context/
+
+# ローカルの開発基盤と再生成できる解析結果
+/context_archive/
+/.agents/
+/graphify-out/
