@@ -87,9 +87,36 @@ if ($windowHandle -eq [IntPtr]::Zero) {
         if ($foundSet.Contains($expected)) { Write-Host "   OK: $expected" }
         else { $Failures.Add("画面に「$expected」が見つかりませんでした。"); Write-Host "   NG: $expected" }
     }
+
+    # 7. 画面を閉じた後、WPF画面は終了し、履歴記録エージェントだけが残ることを確認
+    Write-Host "7. 画面を閉じた後の軽量常駐を確認中..."
+    try {
+        $windowPattern = [System.Windows.Automation.WindowPattern]$element.GetCurrentPattern(
+            [System.Windows.Automation.WindowPattern]::Pattern)
+        $windowPattern.Close()
+        $deadline = (Get-Date).AddSeconds(10)
+        while ((Get-Date) -lt $deadline -and -not $App.HasExited) {
+            Start-Sleep -Milliseconds 250
+            $App.Refresh()
+        }
+        if (-not $App.HasExited) {
+            $Failures.Add("画面を閉じた後もMemoryAnalyzer.App.exeが終了しませんでした。")
+        }
+        if (-not (Get-Process -Name "MemoryAnalyzer.Agent" -ErrorAction SilentlyContinue)) {
+            $Failures.Add("画面を閉じた後にMemoryAnalyzer.Agent.exeが残っていませんでした。")
+        } else {
+            Write-Host "   OK: WPF画面は終了し、履歴記録エージェントが継続中です。"
+        }
+    } catch {
+        $Failures.Add("軽量常駐の確認に失敗しました: $($_.Exception.Message)")
+    }
+
+    if ($KeepOpen) {
+        Start-Process -FilePath $AppPath | Out-Null
+    }
 }
 
-Write-Host "6. 後片付け..."
+Write-Host "8. 後片付け..."
 if (-not $KeepOpen) {
     Get-Process -Name "MemoryAnalyzer.App", "MemoryAnalyzer.Agent" -ErrorAction SilentlyContinue | Stop-Process -Force
 }
@@ -101,4 +128,4 @@ if ($Failures.Count -gt 0) {
     exit 1
 }
 Write-Host ""
-Write-Host "GUIスモークテスト成功: 起動・描画・主要テキストの表示を確認しました。"
+Write-Host "GUIスモークテスト成功: 起動・描画・主要テキスト・軽量常駐を確認しました。"

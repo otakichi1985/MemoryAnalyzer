@@ -24,6 +24,15 @@ if (git -C $Root tag -l "v$Version") {
     throw "タグ v$Version は既に存在します。Version を上げてください。"
 }
 
+# 公開リポジトリへ内部文書が混ざる事故を、公開前に止める
+$InternalPaths = @(git -C $Root ls-files | Where-Object {
+    $_ -match '^(context/|context_archive/|AGENTS\.md$|CLAUDE\.md$|NEXT_)'
+})
+if ($InternalPaths.Count -gt 0) {
+    $listed = $InternalPaths -join [Environment]::NewLine
+    throw "GitHub公開対象に内部文書が含まれています。公開前に除外してください。`n$listed"
+}
+
 # 0. 起動中のアプリを終了し、公開ビルド先のファイルロックを防ぐ
 Get-Process -Name "MemoryAnalyzer.App", "MemoryAnalyzer.Agent" -ErrorAction SilentlyContinue |
     Stop-Process -Force
