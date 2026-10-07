@@ -21,7 +21,7 @@ Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName System.Drawing
 
 # 期待する表示の一部（これが読めれば画面が描画されている）
-$Expected = @("MEMORY ANALYZER", "空きRAM", "CAPACITY CHECK", "現在使用中のRAM", "起動中のプロセス・アプリ")
+$Expected = @("MEMORY ANALYZER", "空きRAM", "メモリ容量の診断", "現在使用中のRAM", "起動中のプロセス・アプリ")
 
 $Failures = [System.Collections.Generic.List[string]]::new()
 
