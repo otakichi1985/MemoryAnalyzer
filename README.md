@@ -51,3 +51,8 @@ dotnet test tests\MemoryAnalyzer.Core.Tests\MemoryAnalyzer.Core.Tests.csproj
 - C# / .NET 8
 - WPF（WindowsデスクトップUI）
 - Windows標準APIを利用した読み取り専用のプロセス監視
+
+## ライセンス
+
+MIT License（`LICENSE` を参照）。
+
